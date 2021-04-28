@@ -23,6 +23,8 @@ const admin = require("./routes/admin");
 const businesses = require("./routes/business");
 const menus = require("./routes/menu");
 
+
+
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
 

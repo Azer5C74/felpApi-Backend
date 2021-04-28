@@ -40,25 +40,25 @@ exports.register = asyncHandler(async (req, res) => {
 });
 
 exports.updateItems = asyncHandler(async (req, res) => {
-  const { item, price } = req.body;
-  const businessID = req.payload.id;
-  if (req.payload.isBusinessAccount !== true)
-    return res.status(403).send({
-      error: true,
-      reason: "Unauthorized"
+    const { item, price } = req.body;
+    const businessID = req.payload.id;
+    if (req.payload.isBusinessAccount !== true)
+      return res.status(403).send({
+        error: true,
+        reason: "Unauthorized"
+      });
+    let business = await Business.findById(businessID);
+    if (!business.menu)
+      return res.status(400).send({
+        error: true,
+        reason: "menu should be created first"
+      });
+    await business.update({
+      $push: {
+        "menu.items": { item, price }
+      }
     });
-  let business = await Business.findById(businessID);
-  if (!business.menu)
-    return res.status(400).send({
-      error: true,
-      reason: "menu should be created first"
-    });
-  await business.update({
-    $push: {
-      "menu.items": { item, price }
-    }
-  });
-  return res.status(201).send({ item, price });
+    return res.status(201).send({ item, price });
 });
 
 // router.put(

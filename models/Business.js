@@ -33,7 +33,8 @@ const businessSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    maxlength: 1024
+    maxlength: 1024,
+    select:false
   },
   type: {
     type: String,

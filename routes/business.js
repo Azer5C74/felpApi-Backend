@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 const {
   me,
   register,
+  //login,
   update,
   getByLocation,
   getById,
@@ -13,7 +14,8 @@ const { validateCreation, validatePatching } = require("../models/Business");
 const validateObjectId = require("../middleware/validateObjectId");
 
 router.get("/me", protect, me);
-router.post("/", validateCreation, register);
+router.post("/register", validateCreation, register);
+//router.post("/login", login);
 router.patch("/", protect, validatePatching, update);
 router.get("/:id", validateObjectId, getById);
 router.get("/:id/menu", validateObjectId, getMenu);

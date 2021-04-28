@@ -35,7 +35,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Check for user
   const user = await User.findOne({ email }).select("+password");
-
   if (!user) {
     return next(new ErrorResponse("Invalid credentials", 401));
   }
