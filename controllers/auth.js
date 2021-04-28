@@ -28,7 +28,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Validate emil & password
+  // Validate email & password
   if (!email || !password) {
     return next(new ErrorResponse("Please provide an email and password", 400));
   }
@@ -65,7 +65,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Get current logged in user
-// @route     POST /api/auth/me
+// @route     GET /api/auth/me
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("-password");

@@ -8,6 +8,13 @@ The documentation of all the application endpoints
 
 ### Users Endpoints
 
+- [GET /api/auth/me](User/current-user.md)
+- [POST /api/auth/register](User/user-register.md)
+- [POST /api/auth/login](User/user-login.md)
+- [PUT /api/auth/forgotpassword](User/user-forgot-password.md)
+- [PUT /api/auth/passwordreset/:token](User/user-password-reset.md)
+- [PUT /api/auth/updatedetails](User/user-updatedetails.md)
+
 ### Businesses Endpoints
 
 - [GET /api/businesses/:id](Business/get-business.md)
