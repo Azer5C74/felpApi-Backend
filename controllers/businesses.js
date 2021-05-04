@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const { Business } = require("../models/Business");
+const User = require("../models/User");
 const asyncHandler = require("../middleware/async");
 
 exports.me = asyncHandler(async (req, res) => {
@@ -79,10 +80,11 @@ exports.getByLocation = asyncHandler(async (req, res) => {
 });
 
 exports.register = asyncHandler(async (req, res) => {
-  const { email, location } = req.body;
+  const businessTypes = ["coffee shop", "restaurant"];
+  const { email, location, type } = req.body;
   let business = await Business.findOne({ email });
-  // TODO: Check if the email is taken by user too
-  if (business)
+  const user = await User.findOne({ email });
+  if (business || user)
     return res
       .status(400)
       .send({ error: true, message: "email has already registered" });
@@ -96,6 +98,11 @@ exports.register = asyncHandler(async (req, res) => {
       error: true,
       message: "this location has been claimed by other business"
     });
+
+  // if (!(type in businessTypes)) return res.status(400).send({
+  //   error: true,
+  //   message: `business type should be in ${businessTypes}`
+  // });
 
   business = new Business(
     _.pick(req.body, [
@@ -165,39 +172,53 @@ exports.update = asyncHandler(async (req, res) => {
   );
 });
 
-// // TODO: fix caegories of the businesses
-// router.get("/recommendations", async (req, res) => {
-//   let { currentUserLocation, currentDateTime } = req.body;
-//   currentDateTime = new Date(currentDateTime);
+exports.getRecommendations = asyncHandler(async (req, res) => {
+  let { currentUserLocation, currentTimeStampInMs, radiusInKm } = req.body;
 
-//   const startMorningPeriod = currentDateTime.setHours(6, 0);
-//   const endMorningPeriod = currentDateTime.setHours(10, 30);
+  let tempDate = new Date(currentTimeStampInMs);
+  let currentDateTime = new Date(currentTimeStampInMs);
+  const startMorningPeriod = tempDate.setHours(6, 0);
+  const endMorningPeriod = tempDate.setHours(10, 30);
+  const startNoonPeriod = tempDate.setHours(11, 45);
+  const endNoonPeriod = tempDate.setHours(14, 45);
 
-//   const startNoonPeriod = currentDateTime.setHours(11, 45);
-//   const endNoonPeriod = currentDateTime.setHours(14, 45);
+  const startEveningPeriod = tempDate.setHours(19, 30);
+  const endEveningPeriod = tempDate.setHours(2, 30);
 
-//   const startEveningPeriod = currentDateTime.setHours(19, 30);
-//   const endEveningPeriod = currentDateTime.setHours(2, 30);
+  let recommendedBusinesses = [];
+  let businessType = null;
+  const { altitude, longitude } = currentUserLocation;
 
-//   if (
-//     currentDateTime >= startMorningPeriod &&
-//     currentDateTime <= endMorningPeriod
-//   ) {
-//     console.log("morning");
-//   } else if (
-//     currentDateTime >= startNoonPeriod &&
-//     currentDateTime <= endNoonPeriod
-//   ) {
-//     console.log("noon");
-//   } else if (
-//     currentDateTime >= startEveningPeriod &&
-//     currentDateTime <= endEveningPeriod
-//   ) {
-//     console.log("evening");
-//   } else {
-//     // return empty array
-//   }
-// });
+  if (
+    currentDateTime >= startMorningPeriod &&
+    currentDateTime <= endMorningPeriod
+  ) {
+    businessType = "coffee shop";
+    console.log({ businessType });
+  } else if (
+    currentDateTime >= startNoonPeriod &&
+    currentDateTime <= endNoonPeriod
+  )
+    businessType = "restaurant";
+  else if (
+    currentDateTime >= startEveningPeriod ||
+    currentDateTime <= endEveningPeriod
+  )
+    businessType = "restaurant";
+
+  recommendedBusinesses = await getBusinessesByLocationAndType(
+    businessType,
+    altitude,
+    longitude,
+    radiusInKm
+  );
+  if (!recommendedBusinesses)
+    return res.status(404).send({
+      error: true,
+      reason: "there are no recommendations. Check your input attributes"
+    });
+  return res.send({ recommendedBusinesses });
+});
 
 // module.exports = router;
 
@@ -232,3 +253,46 @@ exports.login = asyncHandler(async (req, res, next) => {
 });
 
 */
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
+async function getBusinessesByLocationAndType(
+  type,
+  altitude,
+  longitude,
+  radius
+) {
+  const maxRecommendations = 6;
+  let selectedBusinesses = [];
+  const businesses = await Business.find({ type })
+    .sort({ hasDelivery: 1 })
+    .limit(maxRecommendations);
+  let distance;
+  for (business of businesses) {
+    distance = getDistanceFromLatLonInKm(
+      business.location.altitude,
+      business.location.longitude,
+      altitude,
+      longitude
+    );
+    if (distance <= radius) selectedBusinesses.push(business);
+  }
+  return selectedBusinesses;
+}

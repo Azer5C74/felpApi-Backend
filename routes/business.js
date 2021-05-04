@@ -7,13 +7,19 @@ const {
   update,
   getByLocation,
   getById,
-  getMenu
+  getMenu,
+  getRecommendations
 } = require("../controllers/businesses");
 const { protect } = require("../middleware/auth");
-const { validateCreation, validatePatching } = require("../models/Business");
+const {
+  validateCreation,
+  validatePatching,
+  validateRecommendation
+} = require("../models/Business");
 const validateObjectId = require("../middleware/validateObjectId");
 
 router.get("/me", protect, me);
+router.get("/recommendations", validateRecommendation, getRecommendations);
 router.post("/register", validateCreation, register);
 //router.post("/login", login);
 router.patch("/", protect, validatePatching, update);

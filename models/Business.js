@@ -34,7 +34,7 @@ const businessSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     maxlength: 1024,
-    select:false
+    select: false
   },
   type: {
     type: String,
@@ -111,6 +111,19 @@ function validateBusinessPatching(business) {
   return schema.validate(business);
 }
 
+function validateRecommendation(recommendationInput) {
+  const schema = Joi.object({
+    currentUserLocation: Joi.object({
+      longitude: Joi.number().required().greater(-180).less(180),
+      altitude: Joi.number().required().greater(-90).less(90)
+    }).required(),
+    currentTimeStampInMs: Joi.date().timestamp().required(),
+    radiusInKm: Joi.number().required()
+  });
+  return schema.validate(recommendationInput);
+}
+
 exports.Business = Business;
 exports.validateCreation = validate(validateBusinessCreation);
 exports.validatePatching = validate(validateBusinessPatching);
+exports.validateRecommendation = validate(validateRecommendation);
