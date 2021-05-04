@@ -22,6 +22,7 @@ The documentation of all the application endpoints
 - [PATCH /api/businesses](Business/update-business.md)
 - [GET /api/businesses/me](Business/me.md)
 - [GET /api/businesses/:id/menu](Business/get-business-menu.md)
+- [GET /api/businesses/recommendations](Business/get-recommendations.md)
 
 ### Menu Endpoints
 
