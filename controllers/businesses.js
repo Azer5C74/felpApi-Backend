@@ -122,7 +122,7 @@ exports.register = asyncHandler(async (req, res) => {
   business.password = await bcrypt.hash(business.password, salt);
 
   await business.save();
-  const token = business.generateAuthToken();
+  const token = business.getSignedJwtToken();
 
   return res
     .header("x-auth-token", token)
@@ -192,10 +192,9 @@ exports.getRecommendations = asyncHandler(async (req, res) => {
   if (
     currentDateTime >= startMorningPeriod &&
     currentDateTime <= endMorningPeriod
-  ) {
+  )
     businessType = "coffee shop";
-    console.log({ businessType });
-  } else if (
+  else if (
     currentDateTime >= startNoonPeriod &&
     currentDateTime <= endNoonPeriod
   )

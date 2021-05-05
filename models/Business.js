@@ -63,10 +63,13 @@ const businessSchema = new mongoose.Schema({
   menu: menuModelSchema
 });
 
-businessSchema.methods.generateAuthToken = function () {
+businessSchema.methods.getSignedJwtToken = function () {
   const token = jwt.sign(
     { id: this._id, isBusinessAccount: true },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE
+    }
   );
   return token;
 };

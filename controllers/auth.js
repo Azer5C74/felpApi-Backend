@@ -16,7 +16,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   if (user || business)
     return next(new ErrorResponse("email has already registered", 400));
   // Create user
-  const user = await User.create({
+  user = await User.create({
     firstname,
     lastname,
     email,
@@ -40,7 +40,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Check for user
   const user = await User.findOne({ email }).select("+password");
-  const business = await Business.findOne({ email });
+  const business = await Business.findOne({ email }).select("+password");
   if (!user && !business) {
     return next(new ErrorResponse("Invalid credentials", 401));
   }
@@ -53,8 +53,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!isMatch) {
     return next(new ErrorResponse("Invalid credentials", 401));
   }
-
-  sendTokenResponse(user, 200, res);
+  sendTokenResponse(user || business, 200, res);
 });
 
 // @desc      Log user out / clear cookie
