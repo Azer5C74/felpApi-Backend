@@ -1,9 +1,10 @@
 # register user
+
     POST api/auth/register
 
 ## Description
-This endpoint is used to create a new User Registration.
 
+This endpoint is used to create a new User Registration.
 
 ## Requires authentication
 
@@ -16,36 +17,33 @@ This endpoint is used to create a new User Registration.
 - **firstname** : required(type:string)
 - **lastname** : required(type:string)
 - **role** : (type:string,default:user)
+
 ## Return format
 
      JSON
-
 
 ## Errors
 
 - **Bad Request (code:400)** : this occur when duplicate unique parameter is entered.
 
 ```json
-
 {
   "success": false,
   "error": "Duplicate field value entered"
 }
 ```
 
-
 - **Bad Request (code:400)** : this occur when a parameter is missing.
 
 ```json
-
 {
   "success": false,
   "error": "Please add your first name"
 }
 ```
 
-
 - **Bad Request (code:400)** : this occur when a short password is entered.
+
 ```json
 {
   "success": false,
@@ -53,7 +51,14 @@ This endpoint is used to create a new User Registration.
 }
 ```
 
+- **Bad Request (code:400)** : this occurs when a the user tries to register with a registered email.
 
+```json
+{
+  "success": false,
+  "error": "email has already registered."
+}
+```
 
 ## Example
 
@@ -76,4 +81,3 @@ curl --request POST \
 **Return Code**
 
 - **200**
-

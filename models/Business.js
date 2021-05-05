@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 const validate = require("../middleware/validate");
 const { menuModelSchema, menuValidationSchema } = require("./Menu");
+const bcrypt = require("bcrypt");
 
 const locationSchema = new mongoose.Schema({
   longitude: {
@@ -68,6 +69,10 @@ businessSchema.methods.generateAuthToken = function () {
     process.env.JWT_SECRET
   );
   return token;
+};
+
+businessSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 const Business = mongoose.model("Business", businessSchema);

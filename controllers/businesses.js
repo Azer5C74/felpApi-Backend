@@ -220,40 +220,6 @@ exports.getRecommendations = asyncHandler(async (req, res) => {
   return res.send({ recommendedBusinesses });
 });
 
-// module.exports = router;
-
-/*
-
-// @desc      Login business
-// @route     POST /api/businesses/login
-// @access    Public
-exports.login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
-
-  // Validate emil & password
-  if (!email || !password) {
-    return next(new ErrorResponse("Please provide an email and password", 400));
-  }
-
-  // Check for business
-  const business = await BusinessModel.Business.findOne({ email }).select("+password");
-  console.log(business)
-  if (!business) {
-    return next(new ErrorResponse("Invalid credentials", 401));
-  }
-
-  // Check if password matches
-  const isMatch = await business.matchPassword(password);
-
-  if (!isMatch) {
-    return next(new ErrorResponse("Invalid credentials", 401));
-  }
-
-  sendTokenResponse(business, 200, res);
-});
-
-*/
-
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2 - lat1); // deg2rad below

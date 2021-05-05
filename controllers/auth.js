@@ -3,13 +3,18 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/User");
+const { Business } = require("../models/Business");
 
 // @desc      Register user
 // @route     POST /api/auth/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { firstname, lastname, email, password, role } = req.body;
+  const user = await User.findOne({ email });
+  const business = await Business.findOne({ email });
 
+  if (user || business)
+    return next(new ErrorResponse("email has already registered", 400));
   // Create user
   const user = await User.create({
     firstname,
@@ -35,12 +40,15 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Check for user
   const user = await User.findOne({ email }).select("+password");
-  if (!user) {
+  const business = await Business.findOne({ email });
+  if (!user && !business) {
     return next(new ErrorResponse("Invalid credentials", 401));
   }
 
   // Check if password matches
-  const isMatch = await user.matchPassword(password);
+  let isMatch = null;
+  if (user) isMatch = await user.matchPassword(password);
+  else if (business) isMatch = await business.matchPassword(password);
 
   if (!isMatch) {
     return next(new ErrorResponse("Invalid credentials", 401));
