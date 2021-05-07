@@ -1,4 +1,3 @@
-const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
@@ -13,6 +12,7 @@ const hpp = require("hpp");
 const cors = require("cors");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
+const path = require("path");
 const Joi = require("joi");
 
 Joi.objectId = require("joi-objectid")(Joi);

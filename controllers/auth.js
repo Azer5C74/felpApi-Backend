@@ -92,6 +92,7 @@ exports.updateDetails = asyncHandler( async (req, res, next) => {
 
   if (req.body.firstname) fieldsToUpdate.firstname = req.body.firstname;
 
+  //profile picture update
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No picture uploaded.');
   }
@@ -100,10 +101,10 @@ exports.updateDetails = asyncHandler( async (req, res, next) => {
     let sampleFile;
     let uploadPath;
 
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    // The name of the input field ("sampleFile") is used to retrieve the uploaded file
     sampleFile = req.files.file;
 
-    uploadPath = `${process.env.FILE_UPLOAD_PATH}/`+'userPictures/'+new Date().toISOString()+`${sampleFile.name}`;
+    uploadPath = `${process.env.FILE_UPLOAD_PATH}/`+'userPictures/'+sampleFile.md5+`${sampleFile.name}`;
 
     await sampleFile.mv(uploadPath, function (err) {
       if (err)
