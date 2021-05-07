@@ -2,7 +2,11 @@ const crypto = require("crypto");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const sendEmail = require("../utils/sendEmail");
+
+
+
 const User = require("../models/User");
+
 
 // @desc      Register user
 // @route     POST /api/auth/register
@@ -79,14 +83,35 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @desc      Update user details
 // @route     PUT /api/auth/updatedetails
 // @access    Private
-exports.updateDetails = asyncHandler(async (req, res, next) => {
-  const fieldsToUpdate = {};
 
+exports.updateDetails = asyncHandler( async (req, res, next) => {
+  const fieldsToUpdate = {};
   if (req.body.email) fieldsToUpdate.email = req.body.email;
 
   if (req.body.lastname) fieldsToUpdate.lastname = req.body.lastname;
 
   if (req.body.firstname) fieldsToUpdate.firstname = req.body.firstname;
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No picture uploaded.');
+  }
+
+  if(req.files){
+    let sampleFile;
+    let uploadPath;
+
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    sampleFile = req.files.file;
+
+    uploadPath = `${process.env.FILE_UPLOAD_PATH}/`+'userPictures/'+new Date().toISOString()+`${sampleFile.name}`;
+
+    await sampleFile.mv(uploadPath, function (err) {
+      if (err)
+        return res.status(500).send(err);
+
+    });
+    fieldsToUpdate.picture = sampleFile.name;
+  }
 
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
@@ -215,3 +240,5 @@ const sendTokenResponse = (user, statusCode, res) => {
       token
     });
 };
+
+

@@ -47,6 +47,9 @@ if (process.env.NODE_ENV === "development") {
 // File uploading
 app.use(fileupload());
 
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Sanitize data
 app.use(mongoSanitize());
 
@@ -69,8 +72,6 @@ app.use(hpp());
 // Enable CORS
 app.use(cors());
 
-// Set static folder
-app.use(express.static(path.join(__dirname, "public")));
 
 // Mount routers
 app.use("/api/auth", auth);

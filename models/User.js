@@ -21,6 +21,8 @@ const UserSchema = new mongoose.Schema({
       'Please add a valid email'
     ]
   },
+  picture: {
+    type:String},
   role: {
     type: String,
     enum: ['user', 'business','admin'],
@@ -38,7 +40,9 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+
+}
+);
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function(next) {
