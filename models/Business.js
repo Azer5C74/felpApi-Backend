@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 const validate = require("../middleware/validate");
 const { menuModelSchema, menuValidationSchema } = require("./Menu");
+const bcrypt = require("bcrypt");
 
 const locationSchema = new mongoose.Schema({
   longitude: {
@@ -34,7 +35,7 @@ const businessSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     maxlength: 1024,
-    select:false
+    select: false
   },
   type: {
     type: String,
@@ -62,12 +63,19 @@ const businessSchema = new mongoose.Schema({
   menu: menuModelSchema
 });
 
-businessSchema.methods.generateAuthToken = function () {
+businessSchema.methods.getSignedJwtToken = function () {
   const token = jwt.sign(
     { id: this._id, isBusinessAccount: true },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE
+    }
   );
   return token;
+};
+
+businessSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 const Business = mongoose.model("Business", businessSchema);
@@ -111,6 +119,19 @@ function validateBusinessPatching(business) {
   return schema.validate(business);
 }
 
+function validateRecommendation(recommendationInput) {
+  const schema = Joi.object({
+    currentUserLocation: Joi.object({
+      longitude: Joi.number().required().greater(-180).less(180),
+      altitude: Joi.number().required().greater(-90).less(90)
+    }).required(),
+    currentTimeStampInMs: Joi.date().timestamp().required(),
+    radiusInKm: Joi.number().required()
+  });
+  return schema.validate(recommendationInput);
+}
+
 exports.Business = Business;
 exports.validateCreation = validate(validateBusinessCreation);
 exports.validatePatching = validate(validateBusinessPatching);
+exports.validateRecommendation = validate(validateRecommendation);
