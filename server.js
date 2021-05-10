@@ -22,7 +22,7 @@ const auth = require("./routes/auth");
 const admin = require("./routes/admin");
 const businesses = require("./routes/business");
 const menus = require("./routes/menu");
-
+const reviews = require("./routes/review");
 
 
 // Load env vars
@@ -78,6 +78,7 @@ app.use("/api/auth", auth);
 app.use("/api/admin", admin);
 app.use("/api/businesses", businesses);
 app.use("/api/menus", menus);
+app.use("/api/reviews",reviews);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
