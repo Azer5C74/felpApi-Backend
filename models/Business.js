@@ -60,6 +60,11 @@ const businessSchema = new mongoose.Schema({
     type: locationSchema,
     required: true
   },
+  averageRating: {
+    type: Number,
+    min: [1, 'Rating must be at least 1'],
+    max: [10, 'Rating must can not be more than 10']
+  },
   menu: menuModelSchema
 });
 

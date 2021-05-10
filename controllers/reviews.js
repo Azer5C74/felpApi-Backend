@@ -1,9 +1,9 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Review = require('../models/Review');
-const {Business} = require('../models/Business');
+const { Business } = require('../models/Business');
 
-// @desc      Get reviews
+// @desc      Get reviews For specific Business
 // @route     GET /api/reviews
 // @route     GET /api/business/:businessId/reviews
 // @access    Public
@@ -47,20 +47,21 @@ exports.getReview = asyncHandler(async (req, res, next) => {
 // @route     POST /api/business/:businessId/reviews
 // @access    Private
 exports.addReview = asyncHandler(async (req, res, next) => {
-    req.body.business = req.params.businessId;
+    const { businessId } = req.params;
+    req.body.business = businessId;
     req.body.user = req.user.id;
 
-    const business = await Business.findById(req.params.businessId);
+    const business = await Business.findById(businessId);
 
     if (!business) {
         return next(
             new ErrorResponse(
-                `No business with the id of ${req.params.businessId}`,
+                `No business with the id of ${businessId}`,
                 404
             )
         );
     }
-
+    console.log(req.body)
     const review = await Review.create(req.body);
 
     res.status(201).json({

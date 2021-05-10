@@ -14,7 +14,7 @@ const { Business } = require("../models/Business");
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { firstname, lastname, email, password, role } = req.body;
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ email });
   const business = await Business.findOne({ email });
 
   if (user || business)
