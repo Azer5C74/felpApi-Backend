@@ -68,6 +68,13 @@ const businessSchema = new mongoose.Schema({
   menu: menuModelSchema
 });
 
+// Cascade delete reviews when a business is deleted
+businessSchema.pre('remove', async function(next) {
+  console.log(`Reviews being removed from business ${this._id}`);
+  await this.model('Review').deleteMany({ business: this._id });
+  next();
+});
+
 businessSchema.methods.getSignedJwtToken = function () {
   const token = jwt.sign(
     { id: this._id, isBusinessAccount: true },

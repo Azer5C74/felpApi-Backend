@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
 const ReviewSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        trim: true,
-        required: [true, 'Please add a title for the review'],
-        maxlength: 100
-    },
+
+    // title: {
+    //     type: String,
+    //     trim: true,
+    //     required: [true, 'Please add a title for the review'],
+    //     maxlength: 100
+    // },
+
     text: {
         type: String,
         required: [true, 'Please add some text']
@@ -14,9 +16,13 @@ const ReviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
         min: 1,
-        max: 10,
-        required: [true, 'Please add a rating between 1 and 10']
+        max: 5,
+        required: [true, 'Please add a rating between 1 and 5']
     },
+
+    picture: {
+        type:String},
+
     createdAt: {
         type: Date,
         default: Date.now
@@ -69,5 +75,6 @@ ReviewSchema.post('save', function() {
 ReviewSchema.pre('remove', function() {
     this.constructor.getAverageRating(this.business);
 });
+
 
 module.exports = mongoose.model('Review', ReviewSchema);

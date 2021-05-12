@@ -13,7 +13,8 @@ const { Business } = require("../models/Business");
 // @route     POST /api/auth/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { firstname, lastname, email, password, role } = req.body;
+  let { firstname, lastname, email, password, role } = req.body;
+  email = String(email).toLowerCase()
   let user = await User.findOne({ email });
   const business = await Business.findOne({ email });
 
@@ -35,8 +36,8 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @route     POST /api/auth/login
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
-
+  let { email, password } = req.body;
+  email = String(email).toLowerCase()
   // Validate email & password
   if (!email || !password) {
     return next(new ErrorResponse("Please provide an email and password", 400));
@@ -99,9 +100,9 @@ exports.updateDetails = asyncHandler( async (req, res, next) => {
 
   if (req.body.firstname) fieldsToUpdate.firstname = req.body.firstname;
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('No picture uploaded.');
-  }
+  // if (!req.files || Object.keys(req.files).length === 0) {
+  //   return res.status(400).send('No picture uploaded.');
+  // }
 
   if(req.files){
     let sampleFile;

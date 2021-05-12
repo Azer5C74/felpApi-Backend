@@ -50,6 +50,11 @@ exports.addReview = asyncHandler(async (req, res, next) => {
     const { businessId } = req.params;
     req.body.business = businessId;
     req.body.user = req.user.id;
+    const reviewFields = {}
+    reviewFields.business = req.body.business;
+    reviewFields.user= req.body.user;
+    reviewFields.text = req.body.text;
+    reviewFields.rating = req.body.rating;
 
     const business = await Business.findById(businessId);
 
@@ -61,8 +66,27 @@ exports.addReview = asyncHandler(async (req, res, next) => {
             )
         );
     }
-    console.log(req.body)
-    const review = await Review.create(req.body);
+    // if (!req.files || Object.keys(req.files).length === 0) {
+    //     return res.status(400).send('No picture uploaded.');
+    // }
+
+    if(req.files){
+        let sampleFile;
+        let uploadPath;
+
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        sampleFile = req.files.file;
+
+        uploadPath = `${process.env.FILE_UPLOAD_PATH}/`+'reviewPictures/'+sampleFile.md5+`${sampleFile.name}`;
+
+        await sampleFile.mv(uploadPath, function (err) {
+            if (err)
+                return res.status(500).send(err);
+
+        });
+        reviewFields.picture = sampleFile.name;
+    }
+    const review = await Review.create(reviewFields);
 
     res.status(201).json({
         success: true,

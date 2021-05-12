@@ -27,7 +27,8 @@ exports.getById = asyncHandler(async (req, res) => {
       "hasBooking",
       "description",
       "location",
-      "menu"
+      "menu",
+        "averageRating",
     ])
   );
 });
@@ -167,7 +168,7 @@ exports.update = asyncHandler(async (req, res) => {
       "hasBooking",
       "description",
       "location",
-      "menu"
+      "menu",
     ])
   );
 });
