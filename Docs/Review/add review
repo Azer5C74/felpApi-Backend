@@ -1,0 +1,80 @@
+# POST the user review using the token they are logged in with
+
+    POST /api/businesses/:businessId/reviews
+
+## Description
+
+Adds a new review for buisiness
+
+## Requires authentication
+
+**Authentication is required**
+
+## Parameters
+
+- **businessId** : required (type:UUID)
+
+## Return format
+
+     JSON
+
+## Errors
+
+- **Bad Request (code:400)** : this occur when a user tries to add a review more than once for the same businessId.
+
+
+```json
+{
+    "success": false,
+    "error": "Duplicate field value entered"
+} 
+```
+
+- **Bad Request (code:400)** : this occur when a user tries to add a review with 0 rating value.
+
+
+```json
+{
+    "success": false,
+    "error": "Path `rating` (0) is less than minimum allowed value (1)."
+}
+```
+
+
+## Example
+
+**Request**
+
+```bash
+curl --request POST \
+  --url http://localhost:5000/api/businesses/609b2a47f00d9414c7a2a797/reviews \
+  --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWIyOGE5ZjAwZDk0MTRjN2EyYTc5NiIsImlzQnVzaW5lc3NBY2NvdW50IjpmYWxzZSwiaWF0IjoxNjIwNzgxMzA2LCJleHAiOjE2MjMzNzMzMDZ9.SGZ_blxLL-TLQRMcr4NYSXnCYPTJXxZPdqyOp7ZK0l8' \
+  --header 'Content-Type: multipart/form-data; boundary=---011000010111000001101001' \
+  --form 'title="bravo"' \
+  --form 'text="sa7a m3allemdddddddd"' \
+  --form rating=3 \
+  --form file=@/home/user/Pictures/photo_2021-05-07_14-58-42.jpg
+```
+
+
+**Return Body**
+
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "609b31f0b0fd9a2175e5bc96",
+    "business": "609b2a47f00d9414c7a2a797",
+    "user": "609b28a9f00d9414c7a2a796",
+    "text": "\"sa7a m3allemdddddddd\"",
+    "rating": 3,
+    "picture": "photo_2021-05-07_14-58-42.jpg",
+    "createdAt": "2021-05-12T01:40:00.079Z",
+    "__v": 0
+  }
+}
+```
+
+**Return Code**
+
+- **200**
