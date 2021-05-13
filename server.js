@@ -23,6 +23,7 @@ const admin = require("./routes/admin");
 const businesses = require("./routes/business");
 const menus = require("./routes/menu");
 const reviews = require("./routes/review");
+const searchQuery = require("./routes/searchEngine");
 
 
 // Load env vars
@@ -79,6 +80,7 @@ app.use("/api/admin", admin);
 app.use("/api/businesses", businesses);
 app.use("/api/menus", menus);
 app.use("/api/reviews",reviews);
+app.use("/api/searchQuery",searchQuery);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
