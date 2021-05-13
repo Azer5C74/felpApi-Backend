@@ -7,7 +7,7 @@ const sendEmail = require("../utils/sendEmail");
 
 const User = require("../models/User");
 const { Business } = require("../models/Business");
-
+const  Review = require("../models/Review")
 
 // @desc      Register user
 // @route     POST /api/auth/register
@@ -81,10 +81,11 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("-password");
-
+  const review = await Review.find({user: req.user.id}).select()
+  console.log(review)
   res.status(200).json({
     success: true,
-    data: user
+    data: user, review
   });
 });
 

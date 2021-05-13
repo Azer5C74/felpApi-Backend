@@ -2,6 +2,7 @@ const express = require('express');
 const {
     getReviews,
     getReview,
+    getUserReviews,
     addReview,
     updateReview,
     deleteReview
