@@ -6,26 +6,37 @@ const asyncHandler = require('../middleware/async');
 exports.searchQuery = asyncHandler(async (req, res, next) => {
 
     let miniSearch = new MiniSearch({
-        fields: ['name'], // fields to index for full-text search
-        storeFields: ['name'] // fields to return with search results
+        fields: ['name','menu'], // fields to index for full-text search
+        storeFields: ['name','menu'] // fields to return with search results
     })
 
-    businessList = await Business.find().select("name")
+    businessList = await Business.find().select('name menu')
     if(!businessList)
         return next(new ErrorResponse("Business List is empty", 400));
+
+    // const { longitude, altitude } = req.params;
+    // const business = await Business.findOne({
+    //     "location.longitude": longitude,
+    //     "location.altitude": altitude
+    // });
 
 
 // Index all documents
     miniSearch.addAll(businessList)
-    //console.log(miniSearch)
-    console.log(req.query)
+
     const {term} = req.query
-    let results = miniSearch.search(term)
+    let results = miniSearch.search(term,{prefix:true, fuzzy:0.2})
+    console.log(results)
 // Search with default options. It will return the id of the matching documents,
 // along with a relevance score and match information
-    //console.log(miniSearch.search())
-    res.status(200).json({
-        success: true,
-        data: results
-    });
+    if(results) {
+        res.status(200).json({
+            success: true,
+            count: results.length,
+            data: results
+        });
+    }
+    else{
+        return next(new ErrorResponse("Your search did not match any documents, try different keywords", 401));
+    }
 })

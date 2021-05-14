@@ -8,6 +8,6 @@ const { protect, authorize } = require('../middleware/auth');
 
 router.
     route('/').
-    post(searchQuery);
+    get(searchQuery);
 
 module.exports = router;
