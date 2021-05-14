@@ -23,17 +23,18 @@ exports.searchQuery = asyncHandler(async (req, res, next) => {
 
 // Index all documents
     miniSearch.addAll(businessList)
-
     const {term} = req.query
+    let suggestions = miniSearch.autoSuggest(term, { fuzzy: 0.2 })
     let results = miniSearch.search(term,{prefix:true, fuzzy:0.2})
-    console.log(results)
 // Search with default options. It will return the id of the matching documents,
 // along with a relevance score and match information
     if(results) {
         res.status(200).json({
             success: true,
-            count: results.length,
-            data: results
+            countSuggestions: suggestions.length,
+            countResults: results.length,
+            suggestions: suggestions,
+            results: results
         });
     }
     else{
