@@ -246,7 +246,7 @@ async function getBusinessesByLocationAndType(
   longitude,
   radius
 ) {
-  const maxRecommendations = 6;
+  const maxRecommendations = 5;
   let selectedBusinesses = [];
   let businesses = await Business.find({ type })
     .sort({ hasDelivery: 1 })
@@ -260,13 +260,14 @@ async function getBusinessesByLocationAndType(
       altitude,
       longitude
     );
+    // console.log(business.get);
     if (distance <= radius) {
       let res = await axios.get(
         "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?prox=" +
-          business.location.altitude +
-          "," +
           business.location.longitude +
-          "&mode=retrieveAddresses&maxresults=1&gen=9&apiKey=tAxi_Pve_A2BtuQf8d0uYipuccexbb5KfEEQWqxVFdE"
+          "," +
+          business.location.altitude +
+          "&mode=retrieveAddresses&maxresults=1&gen=9&apiKey=PobE03wLFrBMB_1NXEsJAakHa4RVAGlCjCS4tv0BbWQ"
       );
 
       // console.log(
