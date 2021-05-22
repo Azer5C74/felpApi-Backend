@@ -180,11 +180,15 @@ exports.getRecommendations = asyncHandler(async (req, res) => {
   let tempDate = new Date(currentTimeStampInMs);
   let currentDateTime = new Date(currentTimeStampInMs);
   const startMorningPeriod = tempDate.setHours(6, 0);
-  const endMorningPeriod = tempDate.setHours(10, 30);
-  const startNoonPeriod = tempDate.setHours(11, 45);
+  const endMorningPeriod = tempDate.setHours(11, 30);
+
+  const startNoonPeriod = tempDate.setHours(11, 31);
   const endNoonPeriod = tempDate.setHours(14, 45);
 
-  const startEveningPeriod = tempDate.setHours(19, 30);
+  const startAfterNoonPeriod = tempDate.setHours(14, 46);
+  const endAfterNoonPeriod = tempDate.setHours(19, 30);
+
+  const startEveningPeriod = tempDate.setHours(19, 31);
   const endEveningPeriod = tempDate.setHours(2, 30);
 
   let recommendedBusinesses = [];
@@ -201,6 +205,11 @@ exports.getRecommendations = asyncHandler(async (req, res) => {
     currentDateTime <= endNoonPeriod
   )
     businessType = "restaurant";
+  else if (
+    currentDateTime >= startAfterNoonPeriod &&
+    currentDateTime <= endAfterNoonPeriod
+  )
+    businessType = "coffee shop";
   else if (
     currentDateTime >= startEveningPeriod ||
     currentDateTime <= endEveningPeriod
@@ -267,7 +276,7 @@ async function getBusinessesByLocationAndType(
           business.location.longitude +
           "," +
           business.location.altitude +
-          "&mode=retrieveAddresses&maxresults=1&gen=9&apiKey=PobE03wLFrBMB_1NXEsJAakHa4RVAGlCjCS4tv0BbWQ"
+          "&mode=retrieveAddresses&maxresults=1&gen=9&apiKey=Nhr3m67ePbvb5AsISFEl6whtJHJHHibUyw8_tTFeCXU"
       );
 
       // console.log(
@@ -282,9 +291,11 @@ async function getBusinessesByLocationAndType(
         "hasBooking",
         "description",
         "location",
-        "menu"
+        "menu",
+        "averageRating"
       ]);
       buss.address = res.data.Response.View[0].Result[0].Location.Address.Label;
+      buss.distance = distance;
       console.log(buss);
       selectedBusinesses.push(buss);
     }
