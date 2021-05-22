@@ -3,6 +3,7 @@ const _ = require("lodash");
 const { Business } = require("../models/Business");
 const User = require("../models/User");
 const asyncHandler = require("../middleware/async");
+const axios = require("axios");
 
 exports.me = asyncHandler(async (req, res) => {
   const business = await Business.findById(req.user._id).select("-password");
@@ -28,7 +29,7 @@ exports.getById = asyncHandler(async (req, res) => {
       "description",
       "location",
       "menu",
-        "averageRating",
+      "averageRating"
     ])
   );
 });
@@ -168,7 +169,7 @@ exports.update = asyncHandler(async (req, res) => {
       "hasBooking",
       "description",
       "location",
-      "menu",
+      "menu"
     ])
   );
 });
@@ -247,10 +248,11 @@ async function getBusinessesByLocationAndType(
 ) {
   const maxRecommendations = 6;
   let selectedBusinesses = [];
-  const businesses = await Business.find({ type })
+  let businesses = await Business.find({ type })
     .sort({ hasDelivery: 1 })
     .limit(maxRecommendations);
   let distance;
+  let buss;
   for (business of businesses) {
     distance = getDistanceFromLatLonInKm(
       business.location.altitude,
@@ -258,7 +260,33 @@ async function getBusinessesByLocationAndType(
       altitude,
       longitude
     );
-    if (distance <= radius) selectedBusinesses.push(business);
+    if (distance <= radius) {
+      let res = await axios.get(
+        "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?prox=" +
+          business.location.altitude +
+          "," +
+          business.location.longitude +
+          "&mode=retrieveAddresses&maxresults=1&gen=9&apiKey=tAxi_Pve_A2BtuQf8d0uYipuccexbb5KfEEQWqxVFdE"
+      );
+
+      // console.log(
+      //   res.data.Response.View[0].Result[0].Location.Address.Label
+      // );
+      buss = _.pick(business, [
+        "_id",
+        "name",
+        "email",
+        "type",
+        "hasDelivery",
+        "hasBooking",
+        "description",
+        "location",
+        "menu"
+      ]);
+      buss.address = res.data.Response.View[0].Result[0].Location.Address.Label;
+      console.log(buss);
+      selectedBusinesses.push(buss);
+    }
   }
   return selectedBusinesses;
 }
