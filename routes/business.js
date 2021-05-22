@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 //include other resource routers
-const reviewRouter = require("./review")
+const reviewRouter = require("./review");
 
 const {
   me,
@@ -15,7 +15,6 @@ const {
   getRecommendations
 } = require("../controllers/businesses");
 
-
 const { protect } = require("../middleware/auth");
 const {
   validateCreation,
@@ -26,11 +25,10 @@ const {
 const validateObjectId = require("../middleware/validateObjectId");
 
 //Re-route into other resource routers
-router.use('/:businessId/reviews',reviewRouter)
-
+router.use("/:businessId/reviews", reviewRouter);
 
 router.get("/me", protect, me);
-router.get("/recommendations", validateRecommendation, getRecommendations);
+router.post("/recommendations", validateRecommendation, getRecommendations);
 router.post("/register", validateCreation, register);
 //router.post("/login", login);
 router.patch("/", protect, validatePatching, update);
