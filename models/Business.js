@@ -41,7 +41,8 @@ const businessSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 12
+    maxlength: 12,
+    enum: ["Coffee Shop", "Restaurant", "Restau-café"],
   },
   hasDelivery: {
     type: Boolean,

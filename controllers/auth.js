@@ -80,9 +80,9 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @route     GET /api/auth/me
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select("-password");
+  const user = await User.findById(req.user.id).select("-password -picture");
   const review = await Review.find({user: req.user.id}).select()
-  console.log(review)
+ // console.log(review)
   res.status(200).json({
     success: true,
     data: user, review
@@ -94,17 +94,12 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 
 exports.updateDetails = asyncHandler( async (req, res, next) => {
-  const fieldsToUpdate = {};
-  if (req.body.email) fieldsToUpdate.email = req.body.email;
 
-  if (req.body.lastname) fieldsToUpdate.lastname = req.body.lastname;
-
-  if (req.body.firstname) fieldsToUpdate.firstname = req.body.firstname;
-
+console.log(req.body)
   // if (!req.files || Object.keys(req.files).length === 0) {
   //   return res.status(400).send('No picture uploaded.');
   // }
-
+/*
   if(req.files){
     let sampleFile;
     let uploadPath;
@@ -121,8 +116,8 @@ exports.updateDetails = asyncHandler( async (req, res, next) => {
     });
     fieldsToUpdate.picture = sampleFile.name;
   }
-
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+*/
+  const user = await User.findByIdAndUpdate(req.user.id, req.body, {
     new: true,
     runValidators: true
   });
@@ -249,5 +244,3 @@ const sendTokenResponse = (user, statusCode, res) => {
       token
     });
 };
-
-
