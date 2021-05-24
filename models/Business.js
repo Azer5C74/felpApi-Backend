@@ -62,16 +62,24 @@ const businessSchema = new mongoose.Schema({
   },
   averageRating: {
     type: Number,
-    min: [1, 'Rating must be at least 1'],
-    max: [10, 'Rating must can not be more than 10']
+    min: [1, "Rating must be at least 1"],
+    max: [10, "Rating must can not be more than 10"]
   },
-  menu: menuModelSchema
+  menu: menuModelSchema,
+  imageUrl: {
+    type: String,
+    minlength: 7,
+    match: [
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+      "please enter a valid url"
+    ]
+  }
 });
 
 // Cascade delete reviews when a business is deleted
-businessSchema.pre('remove', async function(next) {
+businessSchema.pre("remove", async function (next) {
   console.log(`Reviews being removed from business ${this._id}`);
-  await this.model('Review').deleteMany({ business: this._id });
+  await this.model("Review").deleteMany({ business: this._id });
   next();
 });
 
@@ -126,7 +134,8 @@ function validateBusinessPatching(business) {
       longitude: Joi.string().required(),
       altitude: Joi.string().required()
     }),
-    menu: menuValidationSchema
+    menu: menuValidationSchema,
+    imageUrl: Joi.string().min(7).uri()
   });
   return schema.validate(business);
 }

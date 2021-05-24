@@ -35,7 +35,8 @@ exports.getById = asyncHandler(async (req, res) => {
       "description",
       "location",
       "menu",
-      "averageRating"
+      "averageRating",
+      "imageUrl"
     ])
   );
 });
@@ -82,7 +83,9 @@ exports.getByLocation = asyncHandler(async (req, res) => {
       "hasBooking",
       "description",
       "location",
-      "menu"
+      "menu",
+      "averageRating",
+      "imageUrl"
     ])
   );
 });
@@ -145,7 +148,9 @@ exports.register = asyncHandler(async (req, res) => {
         "hasBooking",
         "description",
         "location",
-        "menu"
+        "menu",
+        "averageRating",
+        "imageUrl"
       ])
     );
 });
@@ -175,7 +180,9 @@ exports.update = asyncHandler(async (req, res) => {
       "hasBooking",
       "description",
       "location",
-      "menu"
+      "menu",
+      "averageRating",
+      "imageUrl"
     ])
   );
 });
@@ -298,7 +305,8 @@ async function getBusinessesByLocationAndType(
         "description",
         "location",
         "menu",
-        "averageRating"
+        "averageRating",
+        "imageUrl"
       ]);
       buss.address = res.data.Response.View[0].Result[0].Location.Address.Label;
       buss.distance = distance;
