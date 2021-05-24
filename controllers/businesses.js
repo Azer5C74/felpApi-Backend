@@ -6,7 +6,13 @@ const asyncHandler = require("../middleware/async");
 const axios = require("axios");
 
 exports.me = asyncHandler(async (req, res) => {
-  const business = await Business.findById(req.user._id).select("-password");
+  const id = req.payload.id;
+  if (req.payload.isBusinessAccount !== true)
+    return res.status(403).send({
+      error: true,
+      reason: "Unauthorized"
+    });
+  const business = await Business.findById(id).select("-password");
   return res.send(business);
 });
 
