@@ -31,7 +31,10 @@ const UserSchema = new mongoose.Schema({
         default:"https://www.irishrsa.ie/wp-content/uploads/2017/03/default-avatar.png"
       }
       ,
-
+  radius:{
+    type:Number,
+    default:1000
+  },
   role: {
     type: String,
     enum: ["user", "business", "admin"],
