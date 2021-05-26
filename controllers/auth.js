@@ -3,18 +3,16 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const sendEmail = require("../utils/sendEmail");
 
-
-
 const User = require("../models/User");
 const { Business } = require("../models/Business");
-const  Review = require("../models/Review")
+const Review = require("../models/Review");
 
 // @desc      Register user
 // @route     POST /api/auth/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   let { firstname, lastname, email, password, role } = req.body;
-  email = String(email).toLowerCase()
+  email = String(email).toLowerCase();
   let user = await User.findOne({ email });
   const business = await Business.findOne({ email });
 
@@ -37,7 +35,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
   let { email, password } = req.body;
-  email = String(email).toLowerCase()
+  email = String(email).toLowerCase();
   // Validate email & password
   if (!email || !password) {
     return next(new ErrorResponse("Please provide an email and password", 400));
@@ -81,11 +79,12 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("-password");
-  const review = await Review.find({user: req.user.id}).select()
-  console.log(review)
+  const review = await Review.find({ user: req.user.id }).select();
+  console.log(review);
   res.status(200).json({
     success: true,
-    data: user, review
+    data: user,
+    review
   });
 });
 
@@ -93,7 +92,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/auth/updatedetails
 // @access    Private
 
-exports.updateDetails = asyncHandler( async (req, res, next) => {
+exports.updateDetails = asyncHandler(async (req, res, next) => {
   const fieldsToUpdate = {};
   if (req.body.email) fieldsToUpdate.email = req.body.email;
 
@@ -105,19 +104,21 @@ exports.updateDetails = asyncHandler( async (req, res, next) => {
   //   return res.status(400).send('No picture uploaded.');
   // }
 
-  if(req.files){
+  if (req.files) {
     let sampleFile;
     let uploadPath;
 
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     sampleFile = req.files.file;
 
-    uploadPath = `${process.env.FILE_UPLOAD_PATH}/`+'userPictures/'+sampleFile.md5+`${sampleFile.name}`;
+    uploadPath =
+      `${process.env.FILE_UPLOAD_PATH}/` +
+      "userPictures/" +
+      sampleFile.md5 +
+      `${sampleFile.name}`;
 
     await sampleFile.mv(uploadPath, function (err) {
-      if (err)
-        return res.status(500).send(err);
-
+      if (err) return res.status(500).send(err);
     });
     fieldsToUpdate.picture = sampleFile.name;
   }
@@ -249,5 +250,3 @@ const sendTokenResponse = (user, statusCode, res) => {
       token
     });
 };
-
-
