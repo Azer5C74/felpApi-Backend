@@ -13,7 +13,7 @@ The documentation of all the application endpoints
 - [POST /api/auth/login](User/user-login.md)
 - [PUT /api/auth/forgotpassword](User/user-forgot-password.md)
 - [PUT /api/auth/passwordreset/:token](User/user-password-reset.md)
-- [PUT /api/auth/updatedetails](User/user-updatedetails.md)
+- [PUT /api/auth/updatedetails](User/user-update-details.md)
 
 ### Businesses Endpoints
 
