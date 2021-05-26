@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
           /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
           "please enter a valid url"
              ],
-        default:"https://www.irishrsa.ie/wp-content/uploads/2017/03/default-avatar.png"
+        default:"https://raw.githubusercontent.com/Ch3di/images/main/depositphotos_199564354-stock-illustration-creative-vector-illustration-default-avatar.jpg"
       }
       ,
   radius:{
