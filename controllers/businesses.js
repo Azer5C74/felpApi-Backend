@@ -271,7 +271,7 @@ async function getBusinessesByLocationAndType(
   const maxRecommendations = 5;
   let selectedBusinesses = [];
   let businesses = await Business.find({ type })
-    .sort({ hasDelivery: 1 })
+    .sort({ averageRating: -1 })
     .limit(maxRecommendations);
   let distance;
   let buss;

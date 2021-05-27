@@ -42,7 +42,7 @@ const businessSchema = new mongoose.Schema({
     required: true,
     minlength: 3,
     maxlength: 12,
-    enum: ["Coffee Shop", "Restaurant", "Restau-café"],
+    enum: ["Coffee Shop", "Restaurant", "Restau-café"]
   },
   hasDelivery: {
     type: Boolean,
@@ -64,7 +64,7 @@ const businessSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
     min: [1, "Rating must be at least 1"],
-    max: [10, "Rating must can not be more than 10"]
+    max: [5, "Rating must can not be more than 5"]
   },
   menu: menuModelSchema,
   imageUrl: {
